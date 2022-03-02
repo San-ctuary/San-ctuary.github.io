@@ -13,24 +13,34 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="">
+  <meta name="description" content="
+
+            来源：Deep Learning based Recommender Systems
+          
+
+主要内容
+使用MovieLens 20M dataset
+基于NCF(Neural  collaborative filtering)的推荐系统
+推荐系统的评估hit@10
+pytorch-lighting的使用
+">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
-  <meta name="description" content="基于NCF的推荐系统来源：Deep Learning based Recommender Systems 主要内容 使用MovieLens 20M dataset 基于NCF(Neural  collaborative filtering)的推荐系统 推荐系统的评估hit@10 pytorch-lighting的使用  简介使用MovieLens 20M dataset中的ratings表(包含用">
+  <meta name="description" content="来源：Deep Learning based Recommender Systems             主要内容 使用MovieLens 20M dataset 基于NCF(Neural  collaborative filtering)的推荐系统 推荐系统的评估hit@10 pytorch-lighting的使用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="基于NCF的推荐系统">
 <meta property="og:url" content="http://example.com/2022/03/02/%E5%9F%BA%E4%BA%8ENCF%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="基于NCF的推荐系统来源：Deep Learning based Recommender Systems 主要内容 使用MovieLens 20M dataset 基于NCF(Neural  collaborative filtering)的推荐系统 推荐系统的评估hit@10 pytorch-lighting的使用  简介使用MovieLens 20M dataset中的ratings表(包含用">
+<meta property="og:description" content="来源：Deep Learning based Recommender Systems             主要内容 使用MovieLens 20M dataset 基于NCF(Neural  collaborative filtering)的推荐系统 推荐系统的评估hit@10 pytorch-lighting的使用">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/img/NCF-framework.png">
 <meta property="article:published_time" content="2022-03-02T02:12:29.902Z">
-<meta property="article:modified_time" content="2022-03-02T02:51:38.074Z">
+<meta property="article:modified_time" content="2022-03-02T03:35:56.577Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/NCF-framework.png">
   
-  <title>Hexo</title>
+  <title>基于NCF的推荐系统 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -176,7 +186,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="">
+            <span class="h2" id="subtitle" title="基于NCF的推荐系统">
               
             </span>
 
@@ -235,16 +245,21 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">基于NCF的推荐系统</h1>
             
             <div class="markdown-body">
-              <h2 id="基于NCF的推荐系统"><a href="#基于NCF的推荐系统" class="headerlink" title="基于NCF的推荐系统"></a>基于NCF的推荐系统</h2><p>来源：<a target="_blank" rel="noopener" href="https://towardsdatascience.com/deep-learning-based-recommender-systems-3d120201db7e">Deep Learning based Recommender Systems</a></p>
+              <!-- ## 基于NCF的推荐系统 -->
+<div class="note note-info">
+            <p>来源：<a target="_blank" rel="noopener" href="https://towardsdatascience.com/deep-learning-based-recommender-systems-3d120201db7e">Deep Learning based Recommender Systems</a></p>
+          </div>
+
 <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ol>
 <li>使用MovieLens 20M dataset</li>
 <li>基于NCF(Neural  collaborative filtering)的推荐系统</li>
 <li>推荐系统的评估<code>hit@10</code></li>
 <li>pytorch-lighting的使用</li>
 </ol>
+<span id="more"></span>
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>使用MovieLens 20M dataset中的ratings表(包含用户ID，电影ID，用户对电影的评分及时间戳)。我们将根据隐式的反馈信息（历史观看记录进行建模）,据此去学习用户和电影的embedding。</p>
 <h2 id="模型构建过程"><a href="#模型构建过程" class="headerlink" title="模型构建过程"></a>模型构建过程</h2><h3 id="导包"><a href="#导包" class="headerlink" title="导包"></a>导包</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> pytorch_lightning <span class="hljs-keyword">as</span> pl<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br>np.random.seed(<span class="hljs-number">123</span>)<br><span class="hljs-keyword">from</span> torch.utils.data <span class="hljs-keyword">import</span> Dataset,DataLoader<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br></code></pre></td></tr></table></figure>
 
@@ -270,7 +285,7 @@
 
 
 
-<h3 id="NCF模型构建"><a href="#NCF模型构建" class="headerlink" title="NCF模型构建"></a>NCF模型构建</h3><p><img src="/img/NCF-framework.png" srcset="/img/loading.gif" lazyload alt="image-20220228152908783"></p>
+<h3 id="NCF模型构建"><a href="#NCF模型构建" class="headerlink" title="NCF模型构建"></a>NCF模型构建</h3><p><img src="/img/NCF-framework.png" srcset="/img/loading.gif" lazyload alt="NCF framework"></p>
 <p>模型部分如图所示，讲user和item的embedding拼接之后，放入全连接神经网络中，最后输出一个一个值，经过sigmoid后表示该用户和这个item交互的概率。具体讲解可以看原文。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NCF</span>(<span class="hljs-params">pl.LightningModule</span>):</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span>(<span class="hljs-params">self,nums_users,num_items,ratings,all_movieIds</span>):</span><br>        <span class="hljs-built_in">super</span>().__init__()<br>        self.user_embedding = nn.Embedding(num_embeddings=nums_users,embedding_dim=<span class="hljs-number">8</span>)<br>        self.item_embedding = nn.Embedding(num_embeddings=num_items,embedding_dim=<span class="hljs-number">8</span>)<br>        self.fc1 = nn.Linear(in_features=<span class="hljs-number">16</span>,out_features=<span class="hljs-number">64</span>)<br>        self.fc2 = nn.Linear(in_features=<span class="hljs-number">64</span>,out_features=<span class="hljs-number">32</span>)<br>        self.output = nn.Linear(in_features=<span class="hljs-number">32</span>,out_features=<span class="hljs-number">1</span>)<br>        self.ratings = ratings<br>        self.all_movieIds = all_movieIds<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span>(<span class="hljs-params">self, user_input,item_input</span>):</span><br>        user_embedded = self.user_embedding(user_input)<br>        item_embedded = self.item_embedding(item_input)<br>        vector = torch.cat([user_embedded,item_embedded],dim=-<span class="hljs-number">1</span>)<br><br>        vector = nn.ReLU()(self.fc1(vector))<br>        vector = nn.ReLU()(self.fc2(vector))<br>        pred = nn.Sigmoid()(self.output(vector))<br><br>        <span class="hljs-keyword">return</span> pred<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">training_step</span>(<span class="hljs-params">self,batch,batch_idx</span>):</span><br>        user_input,item_input,labels = batch<br>        predicted_labels = self(user_input,item_input)<br>        loss = nn.BCELoss()(predicted_labels,labels.view(-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>).<span class="hljs-built_in">float</span>())<br>        <span class="hljs-keyword">return</span> loss<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">configure_optimizers</span>(<span class="hljs-params">self</span>):</span><br>        <span class="hljs-keyword">return</span> torch.optim.Adam(self.parameters())<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">train_dataloader</span>(<span class="hljs-params">self</span>):</span><br>        <span class="hljs-keyword">return</span> DataLoader(MovieLensTrainDataset(self.ratings,self.all_movieIds),batch_size=<span class="hljs-number">512</span>,num_workers=<span class="hljs-number">4</span>)<br></code></pre></td></tr></table></figure>
 
@@ -295,6 +310,13 @@
             <div>
               <div class="post-metas mb-3">
                 
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Recommendation-System/">Recommendation System</a>
+                    
+                  </div>
+                
                 
               </div>
               
@@ -313,7 +335,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/03/02/hello-world/">
+                      <a href="/2021/10/15/hello-world/">
                         <span class="hidden-mobile">Hello World</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
